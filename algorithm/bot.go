@@ -1,14 +1,18 @@
 package algorithm
 
-import "log"
+import (
+	"darkorbitbot/algorithm/states"
+	"log"
+)
 
 type bot struct {
-	currentState *state
+	currentState states.IState
 	inited       bool
 }
 
 func NewBot() bot {
-	return bot{&notInitedState, false}
+	state := states.GetNotInitedState()
+	return bot{state, false}
 }
 
 func (b *bot) Inited() {

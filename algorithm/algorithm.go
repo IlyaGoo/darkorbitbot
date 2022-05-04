@@ -55,7 +55,7 @@ func (a *Algorithm) Run() {
 			saveImageOut(scan)
 		}
 
-		if !b.inited {
+		if b.currentState.GetName() == "" {
 			if len(foundMap["map"]) > 0 {
 				b.Inited()
 			} else if len(foundMap["connect"]) > 0 {
