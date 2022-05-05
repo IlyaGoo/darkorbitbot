@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"darkorbitbot/algorithm/task"
 	"darkorbitbot/scaning"
 	"fmt"
 	"image"
@@ -8,10 +9,13 @@ import (
 	"log"
 	"os"
 	"os/signal"
-
-	"github.com/go-vgo/robotgo"
 )
 
+/** По сути единица бота
+Хранит в себе сущность корабля
+Хранит текущий таск
+Выполняет его
+*/
 type Algorithm struct {
 }
 
@@ -46,7 +50,7 @@ func (a *Algorithm) Run() {
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt, os.Kill)
 	go listenForShotDown(ch)
-	b := NewBot()
+	b := task.NewFarmTask()
 
 	for run {
 		foundMap, scan := scaner.Scan()
@@ -55,19 +59,6 @@ func (a *Algorithm) Run() {
 			saveImageOut(scan)
 		}
 
-		if b.currentState.GetName() == "" {
-			if len(foundMap["map"]) > 0 {
-				b.Inited()
-			} else if len(foundMap["connect"]) > 0 {
-				foundRef := foundMap["connect"][0]
-				x, y := foundRef.GetClickPosition()
-				robotgo.Move(x, y)
-				robotgo.MilliSleep(100)
-				robotgo.Click()
-			} else {
-				log.Println("Waiting for init")
-			}
-		}
-
+		b.Run(foundMap)
 	}
 }

@@ -20,7 +20,7 @@ func NewImageScaner() ImageScaner {
 	return ImageScaner{bounds}
 }
 
-func checkTeampleate(canvas *image.RGBA, fObject *teamplate) []*foundObject {
+func checkTeampleate(canvas *image.RGBA, fObject *teamplate) []*FoundObject {
 	mm, err := locateimage.All(context.Background(), canvas, fObject.image, fObject.recommendedTolerance)
 	if err != nil {
 		log.Fatal(err)
@@ -30,9 +30,9 @@ func checkTeampleate(canvas *image.RGBA, fObject *teamplate) []*foundObject {
 		Rect(find.Rect.Min.X, find.Rect.Min.Y, find.Rect.Max.X, find.Rect.Max.Y, canvas, fObject.color)
 	}
 
-	foundObjects := make([]*foundObject, len(mm))
+	foundObjects := make([]*FoundObject, len(mm))
 	for i, e := range mm {
-		newObject := foundObject{
+		newObject := FoundObject{
 			fObject,
 			e.Rect.Min.X,
 			e.Rect.Min.Y,
@@ -42,7 +42,7 @@ func checkTeampleate(canvas *image.RGBA, fObject *teamplate) []*foundObject {
 	return foundObjects
 }
 
-func (s *ImageScaner) Scan() (map[string][]*foundObject, *image.RGBA) {
+func (s *ImageScaner) Scan() (map[string][]*FoundObject, *image.RGBA) {
 	imgRGBA, err := screenshot.CaptureRect(s.bounds)
 	if err != nil {
 		panic(err)
@@ -57,7 +57,7 @@ func (s *ImageScaner) Scan() (map[string][]*foundObject, *image.RGBA) {
 
 	teamplates := getTeamplates()
 
-	m := make(map[string][]*foundObject)
+	m := make(map[string][]*FoundObject)
 
 	for _, t := range teamplates {
 		m[t.name] = checkTeampleate(canvas, t)

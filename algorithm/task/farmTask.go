@@ -3,12 +3,12 @@ package task
 import "darkorbitbot/algorithm/controllers"
 
 type FarmTask struct {
-	Task
+	*Task
 }
 
 func NewFarmTask() FarmTask {
 	controllers := []controllers.IController{
-		controllers.NewAttackController(),
+		controllers.NewBasicController(),
 	}
-	return FarmTask{Task{controllers}}
+	return FarmTask{&Task{controllers}}
 }
