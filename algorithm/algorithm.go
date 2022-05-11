@@ -3,10 +3,10 @@ package algorithm
 import (
 	"darkorbitbot/algorithm/task"
 	"darkorbitbot/scaning"
-	"fmt"
 	"image"
 	"image/png"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 )
@@ -19,12 +19,8 @@ import (
 type Algorithm struct {
 }
 
-func saveImage(scaned *image.RGBA, counter int) {
-	fmt.Println(counter)
-}
-
 var run bool = true
-var needSave bool = true
+var needSave bool = false
 
 func listenForShotDown(ch <-chan os.Signal) {
 	<-ch
@@ -52,12 +48,32 @@ func (a *Algorithm) Run() {
 	go listenForShotDown(ch)
 	b := task.NewFarmTask()
 
+	teamplates := scaning.GetTeamplates()
+	foundChannel := make(chan scaning.FoundObject, 30)
+
 	for run {
-		foundMap, scan := scaner.Scan()
-		log.Println(foundMap)
-		if needSave {
-			saveImageOut(scan)
+		foundMap := make(map[string][]scaning.FoundObject)
+		scaner.Scan(teamplates, foundChannel)
+
+		res := int(math.Min(10, float64(len(foundChannel))))
+		for i := 0; i < res; i++ {
+			x, ok := <-foundChannel
+			if !ok {
+				break
+			}
+			foundMap[x.Name] = append(foundMap[x.Name], x)
 		}
+
+		log.Println(foundMap)
+		// if needSave {
+		// 	for _, find := range foundMap {
+		// 		for _, found := range find {
+		// 			x, y := found.BottomRight()
+		// 			scaning.Rect(found.PosX, found.PosY, x, y, scan, found.GetColor())
+		// 		}
+		// 	}
+		// 	saveImageOut(scan)
+		// }
 
 		b.Run(foundMap)
 	}

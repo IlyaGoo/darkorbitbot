@@ -17,5 +17,5 @@ import "darkorbitbot/scaning"
 
 */
 type IController interface {
-	Run(map[string][]*scaning.FoundObject) bool //true если не переходим к следующему контроллеру //todo Должен хавать данные о игроке и набор foundObject
+	Run(map[string][]scaning.FoundObject) bool //true если не переходим к следующему контроллеру //todo Должен хавать данные о игроке и набор foundObject
 }

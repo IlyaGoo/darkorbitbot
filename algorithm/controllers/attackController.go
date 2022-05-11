@@ -17,6 +17,6 @@ func NewAttackController() *AttackController {
 	return &AttackController{}
 }
 
-func (c *AttackController) Run(foundMap map[string][]*scaning.FoundObject) bool { //todo
+func (c *AttackController) Run(foundMap map[string][]scaning.FoundObject) bool { //todo
 	return false
 }

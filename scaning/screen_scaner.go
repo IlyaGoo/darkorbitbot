@@ -1,13 +1,10 @@
 package scaning
 
 import (
-	"context"
 	"image"
-	"image/draw"
-	"log"
 
-	"github.com/andreyvit/locateimage"
 	"github.com/kbinani/screenshot"
+	"github.com/vcaesar/gcv"
 )
 
 type ImageScaner struct {
@@ -20,48 +17,32 @@ func NewImageScaner() ImageScaner {
 	return ImageScaner{bounds}
 }
 
-func checkTeampleate(canvas *image.RGBA, fObject *teamplate) []*FoundObject {
-	mm, err := locateimage.All(context.Background(), canvas, fObject.image, fObject.recommendedTolerance)
-	if err != nil {
-		log.Fatal(err)
-	}
+func gcvCheckTeampleate(canvas image.Image, teamplate *teamplate, ch chan FoundObject) {
+	mm := gcv.FindAllImg(teamplate.Image, canvas)
 
-	for _, find := range mm {
-		Rect(find.Rect.Min.X, find.Rect.Min.Y, find.Rect.Max.X, find.Rect.Max.Y, canvas, fObject.color)
-	}
-
-	foundObjects := make([]*FoundObject, len(mm))
-	for i, e := range mm {
+	for _, f := range mm {
 		newObject := FoundObject{
-			fObject,
-			e.Rect.Min.X,
-			e.Rect.Min.Y,
+			teamplate.name,
+			teamplate.color,
+			teamplate.Image.Rect.Dx(),
+			teamplate.Image.Rect.Dy(),
+			f.TopLeft.X,
+			f.TopLeft.Y,
 		}
-		foundObjects[i] = &newObject
+		ch <- newObject
 	}
-	return foundObjects
 }
 
-func (s *ImageScaner) Scan() (map[string][]*FoundObject, *image.RGBA) {
+func (s *ImageScaner) Scan(teamplates []*teamplate, ch chan FoundObject) image.Image {
 	imgRGBA, err := screenshot.CaptureRect(s.bounds)
 	if err != nil {
 		panic(err)
 	}
 
-	//kek9 := imaging.AdjustSaturation(imgRGBA, 80)
-	//kek10 := imaging.AdjustContrast(kek9, 100)
-	img0 := image.Image(imgRGBA)
-	b0 := img0.Bounds()
-	canvas := image.NewRGBA(image.Rect(0, 0, b0.Dx(), b0.Dy()))
-	draw.Draw(canvas, canvas.Bounds(), img0, b0.Min, draw.Src)
-
-	teamplates := getTeamplates()
-
-	m := make(map[string][]*FoundObject)
-
+	canvas := image.Image(imgRGBA)
 	for _, t := range teamplates {
-		m[t.name] = checkTeampleate(canvas, t)
+		go gcvCheckTeampleate(canvas, t, ch)
 	}
 
-	return m, canvas
+	return canvas
 }

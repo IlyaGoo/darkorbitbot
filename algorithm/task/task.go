@@ -23,7 +23,7 @@ type Task struct {
 	controllers []controllers.IController
 }
 
-func (t *Task) Run(foundMap map[string][]*scaning.FoundObject) {
+func (t *Task) Run(foundMap map[string][]scaning.FoundObject) {
 	for _, c := range t.controllers {
 		breaked := c.Run(foundMap)
 		if breaked {

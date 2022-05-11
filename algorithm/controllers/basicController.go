@@ -20,11 +20,18 @@ func NewBasicController() *BasicController {
 	return &BasicController{}
 }
 
-func (c *BasicController) Run(foundMap map[string][]*scaning.FoundObject) bool { //todo
+func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool { //todo
 	if len(foundMap["map"]) > 0 {
 		return false
 	} else if len(foundMap["connect"]) > 0 {
 		foundRef := foundMap["connect"][0]
+		x, y := foundRef.GetClickPosition()
+		robotgo.Move(x, y)
+		robotgo.MilliSleep(100)
+		robotgo.Click()
+		return true
+	} else if len(foundMap["close"]) > 0 {
+		foundRef := foundMap["close"][0]
 		x, y := foundRef.GetClickPosition()
 		robotgo.Move(x, y)
 		robotgo.MilliSleep(100)

@@ -11,17 +11,18 @@ import (
 
 type teamplate struct {
 	name                 string
-	image                *image.RGBA
+	Image                *image.RGBA
 	recommendedTolerance float64
 	color                color.RGBA
 }
 
-func getTeamplates() []*teamplate {
+func GetTeamplates() []*teamplate {
 	x := []*teamplate{
 		{"box", loadTeamplate("box"), 0.19, red},
 		{"resbox", loadTeamplate("resbox"), 0.1, red},
 		{"mmo", loadTeamplate("mmo"), 0.04, red},
 		{"connect", loadTeamplate("connect"), 0.04, red},
+		{"close", loadTeamplate("close"), 0.04, red},
 	}
 	return x
 }
@@ -34,8 +35,6 @@ func loadTeamplate(addPath string) *image.RGBA {
 		log.Fatal(err)
 	}
 	defer existingImageFile.Close()
-	//Возвращаем каретку в начало (фиксит некоторые баги либы(я не шучу, удалять нельзя))
-	existingImageFile.Seek(0, 0)
 	//Декодируем экзампл
 	imageData, _, err := image.Decode(existingImageFile)
 	if err != nil {
