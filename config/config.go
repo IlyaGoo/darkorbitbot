@@ -28,7 +28,7 @@ func Get() Config {
 		}
 
 		//todo Не заполняется
-		config.SaveScreen = false
+		config.SaveScreen = true
 		config.XDif = -1280
 
 		config.print()

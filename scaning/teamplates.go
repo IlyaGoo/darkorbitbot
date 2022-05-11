@@ -10,19 +10,23 @@ import (
 )
 
 type teamplate struct {
-	name                 string
-	Image                *image.RGBA
-	recommendedTolerance float64
-	color                color.RGBA
+	name  string
+	Image *image.RGBA
+	color color.RGBA
 }
 
 func GetTeamplates() []*teamplate {
 	x := []*teamplate{
-		{"box", loadTeamplate("box"), 0.19, red},
-		{"resbox", loadTeamplate("resbox"), 0.1, red},
-		{"mmo", loadTeamplate("mmo"), 0.04, red},
-		{"connect", loadTeamplate("connect"), 0.04, red},
-		{"close", loadTeamplate("close"), 0.04, red},
+		{"box", loadTeamplate("box"), red},
+		{"resbox", loadTeamplate("resbox"), red},
+		{"mmo", loadTeamplate("mmo"), red},
+		{"connect", loadTeamplate("connect"), red},
+		{"close", loadTeamplate("close"), red},
+		{"cargo", loadTeamplate("ship/cargo"), red},
+		{"trade", loadTeamplate("trade"), red},
+		{"sell", loadTeamplate("sell"), red},
+		{"minimap_icon", loadTeamplate("windows/minimap_icon"), red},
+		{"user_icon", loadTeamplate("windows/user_icon"), red},
 	}
 	return x
 }
