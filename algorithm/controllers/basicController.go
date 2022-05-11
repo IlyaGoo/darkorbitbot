@@ -4,6 +4,8 @@ import (
 	"darkorbitbot/scaning"
 	"log"
 
+	"darkorbitbot/config"
+
 	"github.com/go-vgo/robotgo"
 )
 
@@ -24,21 +26,21 @@ func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool { 
 	if len(foundMap["map"]) > 0 {
 		return false
 	} else if len(foundMap["connect"]) > 0 {
-		foundRef := foundMap["connect"][0]
-		x, y := foundRef.GetClickPosition()
-		robotgo.Move(x, y)
-		robotgo.MilliSleep(100)
-		robotgo.Click()
+		found := foundMap["connect"][0]
+		MooveAndClick(found)
 		return true
 	} else if len(foundMap["close"]) > 0 {
-		foundRef := foundMap["close"][0]
-		x, y := foundRef.GetClickPosition()
-		robotgo.Move(x, y)
-		robotgo.MilliSleep(100)
-		robotgo.Click()
+		found := foundMap["close"][0]
+		MooveAndClick(found)
 		return true
 	} else {
 		log.Println("Waiting for init")
 	}
 	return false
+}
+
+func MooveAndClick(found scaning.FoundObject) {
+	robotgo.Move(config.Get().XDif+found.ClickX, config.Get().YDif+found.ClickY)
+	robotgo.MilliSleep(100)
+	robotgo.Click()
 }

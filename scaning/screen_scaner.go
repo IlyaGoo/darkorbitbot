@@ -24,8 +24,8 @@ func gcvCheckTeampleate(canvas image.Image, teamplate *teamplate, ch chan FoundO
 		newObject := FoundObject{
 			teamplate.name,
 			teamplate.color,
-			teamplate.Image.Rect.Dx(),
-			teamplate.Image.Rect.Dy(),
+			f.Middle.X,
+			f.Middle.Y,
 			f.TopLeft.X,
 			f.TopLeft.Y,
 		}

@@ -8,7 +8,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"os/signal"
 )
 
 /** По сути единица бота
@@ -19,13 +18,15 @@ import (
 type Algorithm struct {
 }
 
-var run bool = true
-var needSave bool = false
+func NewAlgorithm() Algorithm {
+	return Algorithm{}
+}
 
-func listenForShotDown(ch <-chan os.Signal) {
-	<-ch
+func (a *Algorithm) Stop() {
 	run = false
 }
+
+var run bool = true
 
 func saveImageOut(scan *image.RGBA) {
 	f, err := os.Create("outimage.png")
@@ -43,9 +44,6 @@ func saveImageOut(scan *image.RGBA) {
 func (a *Algorithm) Run() {
 	scaner := scaning.NewImageScaner()
 
-	ch := make(chan os.Signal)
-	signal.Notify(ch, os.Interrupt, os.Kill)
-	go listenForShotDown(ch)
 	b := task.NewFarmTask()
 
 	teamplates := scaning.GetTeamplates()
