@@ -1,6 +1,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"sync"
 
 	"github.com/kelseyhightower/envconfig"
@@ -24,6 +26,21 @@ func Get() Config {
 		if err != nil {
 			logrus.Fatal(err)
 		}
+
+		//todo Не заполняется
+		config.SaveScreen = false
+		config.XDif = -1280
+
+		config.print()
 	})
+
 	return config
+}
+
+func (cfg *Config) print() {
+	jsonConfig, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		logrus.Error(err)
+	}
+	fmt.Println(string(jsonConfig))
 }

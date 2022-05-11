@@ -2,8 +2,10 @@ package algorithm
 
 import (
 	"darkorbitbot/algorithm/task"
+	"darkorbitbot/config"
 	"darkorbitbot/scaning"
 	"image"
+	"image/draw"
 	"image/png"
 	"log"
 	"math"
@@ -16,10 +18,11 @@ import (
 Выполняет его
 */
 type Algorithm struct {
+	config config.Config
 }
 
-func NewAlgorithm() Algorithm {
-	return Algorithm{}
+func NewAlgorithm(config config.Config) Algorithm {
+	return Algorithm{config}
 }
 
 func (a *Algorithm) Stop() {
@@ -51,7 +54,7 @@ func (a *Algorithm) Run() {
 
 	for run {
 		foundMap := make(map[string][]scaning.FoundObject)
-		scaner.Scan(teamplates, foundChannel)
+		scan := scaner.Scan(teamplates, foundChannel)
 
 		res := int(math.Min(10, float64(len(foundChannel))))
 		for i := 0; i < res; i++ {
@@ -62,16 +65,18 @@ func (a *Algorithm) Run() {
 			foundMap[x.Name] = append(foundMap[x.Name], x)
 		}
 
-		log.Println(foundMap)
-		// if needSave {
-		// 	for _, find := range foundMap {
-		// 		for _, found := range find {
-		// 			x, y := found.BottomRight()
-		// 			scaning.Rect(found.PosX, found.PosY, x, y, scan, found.GetColor())
-		// 		}
-		// 	}
-		// 	saveImageOut(scan)
-		// }
+		if a.config.SaveScreen {
+			b := scan.Bounds()
+			m := image.NewRGBA(image.Rect(0, 0, b.Dx(), b.Dy()))
+			draw.Draw(m, m.Bounds(), scan, b.Min, draw.Src)
+
+			for _, find := range foundMap {
+				for _, found := range find {
+					scaning.Rect(found.PosX, found.PosY, found.ClickX, found.ClickY, m, found.GetColor())
+				}
+			}
+			saveImageOut(m)
+		}
 
 		b.Run(foundMap)
 	}

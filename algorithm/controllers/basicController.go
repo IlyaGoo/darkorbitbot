@@ -4,8 +4,6 @@ import (
 	"darkorbitbot/scaning"
 	"log"
 
-	"darkorbitbot/config"
-
 	"github.com/go-vgo/robotgo"
 )
 
@@ -22,7 +20,7 @@ func NewBasicController() *BasicController {
 	return &BasicController{}
 }
 
-func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool { //todo
+func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool {
 	if len(foundMap["map"]) > 0 {
 		return false
 	} else if len(foundMap["connect"]) > 0 {
@@ -40,7 +38,9 @@ func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool { 
 }
 
 func MooveAndClick(found scaning.FoundObject) {
-	robotgo.Move(config.Get().XDif+found.ClickX, config.Get().YDif+found.ClickY)
-	robotgo.MilliSleep(100)
+	//robotgo.MouseSleep = 100
+	//todo 1.66 коэффицент при движении мыши на втором экране
+	robotgo.Move(int(float64(found.ClickX)/float64(1.66)), found.ClickY)
 	robotgo.Click()
+	robotgo.MilliSleep(100)
 }

@@ -10,9 +10,9 @@ import (
 )
 
 func main() {
-	config.Get()
+	cfg := config.Get()
 	fmt.Println("Bot started")
-	algo := algorithm.NewAlgorithm()
+	algo := algorithm.NewAlgorithm(cfg)
 
 	go listenEvents(&algo)
 	algo.Run()
