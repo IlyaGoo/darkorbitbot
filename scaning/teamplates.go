@@ -27,6 +27,9 @@ func GetTeamplates() []*teamplate {
 		{"sell", loadTeamplate("sell"), red},
 		{"minimap_icon", loadTeamplate("windows/minimap_icon"), red},
 		{"user_icon", loadTeamplate("windows/user_icon"), red},
+		{"ship_icon", loadTeamplate("windows/ship_icon"), red},
+		{"profiler_icon", loadTeamplate("windows/profiler_icon"), red},
+		{"group_icon", loadTeamplate("windows/group_icon"), red},
 	}
 	return x
 }

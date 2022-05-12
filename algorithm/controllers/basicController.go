@@ -27,11 +27,11 @@ func (c *BasicController) InitInterface(foundMap map[string][]scaning.FoundObjec
 }
 
 func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool {
-	if 1 == 1 {
-		x, y := robotgo.GetMousePos()
-		fmt.Println("pos: ", x, y)
-		return true
-	}
+	// if 1 == 1 {
+	// 	x, y := robotgo.GetMousePos()
+	// 	fmt.Println("pos: ", x, y)
+	// 	return true
+	// }
 
 	if len(foundMap["map"]) > 0 {
 		return false
@@ -68,7 +68,7 @@ func (c *BasicController) Run(foundMap map[string][]scaning.FoundObject) bool {
 
 func MooveAndClick(found scaning.FoundObject) {
 	//robotgo.MouseSleep = 100
-	//todo 1.66 коэффицент при движении мыши на втором экране
+	//todo 1.66 коэффицент положения мыши на втором экране
 	robotgo.Move(int(float64(found.ClickX)/float64(1.66)), found.ClickY)
 	robotgo.Click()
 	robotgo.MilliSleep(100)
